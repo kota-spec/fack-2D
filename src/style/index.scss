@@ -1,0 +1,63 @@
+@import '../shared/styles/import';
+@import '../shared/icons/css/icons';
+
+$test: #fff;
+
+.body {
+  color: $test;
+}
+
+.test {
+  position: relative;
+  height: 10000px;
+}
+
+.scroll-text {
+  position: absolute;
+  color: #000;
+
+  &_one {
+    top: 200px;
+    left: 200px;
+  }
+
+  &_two {
+    top: 1000px;
+    left: 200px;
+  }
+
+  &_three {
+    top: 1800px;
+    left: 100px;
+  }
+
+  &_fore {
+    top: 2700px;
+    left: 100px;
+  }
+}
+
+.text-splite-wrap {
+  display: inline-block;
+  font-size: 2.8rem;
+  overflow: hidden;
+}
+
+.text-splite {
+  width: auto;
+  transform: translate3d(1em, 0, 0);
+  display: inline-block;
+  transition: transform 0.6s ease-in-out;
+
+  &.isActive {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.gl {
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  position: absolute;
+}

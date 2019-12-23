@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title><%= fontName %></title>
+    <link rel='stylesheet' href='/style/index.css')>
+    <style type="text/css">
+      body { font-family: Gill Sans; text-align: center; background: #f7f7f7 }
+      body > h1 { color: #666; margin: 1em 0 }
+      .glyph { padding: 0 }
+      .glyph > li { display: inline-block; padding: 10px; margin: .3em .2em; background: #fff; border-radius: .5em; position: relative }
+      .glyph > li .s { display: block; margin-top: .1em; line-height: 0 }
+      .glyph > li > i > span { position: absolute; top: 0; left: 0; text-align: center; width: 100%; color: rgba(0,0,0,0); line-height: 1em }
+
+      .glyph-title { 
+        font-size: 32px; 
+        color: #000; 
+        display: block;
+      }
+
+      .glyph-icon { 
+        font-size: 32px; 
+        color: #000; 
+        display: block ;
+        font-style: normal;
+      }
+
+      .glyph-name { 
+        font-size: 14px; 
+        color: #000; 
+        display: block 
+      }
+
+      .glyph-codepoint { 
+        font-size: 14px; 
+        color: #999; 
+        font-family: monospace 
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="glyph-title"><%= fontName %></h1>
+    <ul class="glyph"><% _.each(glyphs, function(glyph) { %>
+      <li>
+        <i class="glyph-icon global-icon-font <%= glyph.fileName %>"></i>
+        <span class="glyph-name"><%= glyph.fileName %></span>
+        <span class="glyph-codepoint">\<%= glyph.codePoint %></span>
+      </li><% }); %>
+    </ul>
+  </body>
+</html>

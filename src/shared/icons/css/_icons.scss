@@ -1,0 +1,42 @@
+@font-face {
+  /* stylelint-disable font-family-name-quotes */
+  font-family: 'Icons';
+  /* stylelint-enable */
+  src: url('/shared/icons/Icons.eot');
+  src:
+    url('/shared/icons/Icons.eot?#iefix') format('eot'),
+    url('/shared/icons/Icons.woff') format('woff'),
+    url('/shared/icons/Icons.ttf') format('truetype'),;
+}
+
+.global-icon-font {
+  /* stylelint-disable font-family-name-quotes */
+  font-family: 'Icons';
+  /* stylelint-enable */
+  font-style: normal;
+
+  &.adjust-solid {
+    &::before {
+      content: '\E001';
+    }
+  }
+
+  &.align-right-solid {
+    &::before {
+      content: '\E002';
+    }
+  }
+
+  &.amazon-pay-brands {
+    &::before {
+      content: '\E003';
+    }
+  }
+
+  &.fb {
+    &::before {
+      content: '\E004';
+    }
+  }
+
+}

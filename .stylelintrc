@@ -1,0 +1,11 @@
+{
+  "extends": "stylelint-config-primer",
+  "rules": {
+    "indentation": 2,
+    "string-quotes": "single",
+    "no-missing-end-of-source-newline": null,
+    "order/properties-order": null,
+    "selector-max-type": null,
+    "plugin/no-unsupported-browser-features": null
+  }
+}

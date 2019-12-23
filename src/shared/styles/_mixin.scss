@@ -1,0 +1,55 @@
+@mixin font-size ($font-size: 12) {
+  $rem-size: $font-size * 0.1;
+
+  font-size: $font-size + px;
+  font-size: $rem-size + rem;
+}
+
+/* 画像サイズによってフォントサイズを変える */
+@mixin fz-vw($fontSize: 10, $viewport: 320) {
+  font-size: $fontSize * 1px;
+  font-size: $fontSize / $viewport * 100vw;
+}
+
+/* font-size, line-height, letter-spacingを出力 */
+@mixin font-rem($font-size, $line-height:0, $letter-spacing:0, $is_center:false) {
+  font-size: ($font-size * 0.1) * 1rem;
+  @if ($line-height!=0) {
+    line-height: ($line-height / $font-size);
+  }
+  @if ($letter-spacing!=0) {
+    letter-spacing: ($letter-spacing / $font-size) * 1em;
+    @if ($is_center==true) {
+      text-indent: ($letter-spacing / $font-size) * 1em;
+    }
+  }
+}
+
+/* absolute */
+@mixin absolute($top:null, $right:null, $bottom:null, $left:null) {
+  position: absolute;
+  @if $top != null {
+    top: $top;
+  }
+  @if $right != null {
+    right: $right;
+  }
+  @if $bottom != null {
+    bottom: $bottom;
+  }
+  @if $left != null {
+    left: $left;
+  }
+}
+
+/* アスペクト比に対応させたDOM */
+@mixin aspect-ratio($width, $height, $image_path: null) {
+  display: block;
+  width: 100%;
+  height: 0;
+  padding-top: ($height + px / $width + px) * 100%;
+  @if $image_path != null {
+    background: url($image_path) 50% 50% no-repeat;
+    background-size: cover;
+  }
+}

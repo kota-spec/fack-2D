@@ -1,0 +1,11 @@
+{
+    "siteWide": {
+        "title":"sitewide",
+        "description":"サイト全体で使うデータ",
+        "page": [
+            {
+                "title": "サイト全体だよ"
+            }
+        ]
+    }
+}

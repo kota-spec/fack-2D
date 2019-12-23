@@ -1,0 +1,21 @@
+block vars
+  -
+    var title = 'top'
+
+doctype html
+html(lang='ja')
+  head
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    title #{title}
+    meta(charset='utf-8')
+    meta(name='description', content='')
+    meta(name='author', content='')
+    meta(name='viewport', content='width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1')
+    meta(name='format-detection', content='telephone=no')
+    link(rel='stylesheet', href='/style/index.css')
+
+  body
+    include ../module/_header
+    block main
+    include ../module/_footer
+    script(src='/script/index.bundle.js')
