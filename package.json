@@ -7,7 +7,7 @@
     "dev": "gulp build:dev",
     "prebuild": "rimraf ./docs",
     "build": "cross-env NODE_ENV=docs gulp build",
-    "browser": "browser-sync start -s 'production'",
+    "browser": "browser-sync start -s 'docs'",
     "iconfont": "gulp iconfont:build && yarn lint:style",
     "lint:html": "gulp pug:lint",
     "lint:script": "eslint --fix --ext .js --ignore-path .gitignore .",
