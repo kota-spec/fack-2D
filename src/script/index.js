@@ -30,13 +30,38 @@ class FackImage {
     this.thresholdX = 35;
     this.thresholdY = 15;
 
+    this.isFirst = true;
+
     this.threshold = new THREE.Vector2(this.thresholdX, this.thresholdY);
+
+    this.textureName = 'lady';
+    this.textureNameCache = '';
+
+    this.texture = {
+      lady: {
+        image1: './image/lady.jpg',
+        image2: './image/lady-map.jpg'
+      },
+      ball: {
+        image1: './image/ball.jpg',
+        image2: './image/ball-map.jpg'
+      },
+      canyon: {
+        image1: './image/canyon.jpg',
+        image2: './image/canyon-map.jpg'
+      },
+      mount: {
+        image1: './image/mount.jpg',
+        image2: './image/mount-map.jpg'
+      }
+    };
 
     // bind系
     this.onMouse = this.onMouse.bind(this);
     this.onResize = this.onResize.bind(this);
     this.render = this.render.bind(this);
     this.onOrientation = this.onOrientation.bind(this);
+    this.onOrientationEvent = this.onOrientationEvent.bind(this);
   }
 
   init() {
@@ -53,7 +78,7 @@ class FackImage {
     );
     this.camera.position.set(0, 0, 10);
 
-    this.updataImage();
+    this.loadImage();
     this.onListener();
   }
 
@@ -65,7 +90,7 @@ class FackImage {
       DeviceOrientationEvent &&
       typeof DeviceOrientationEvent.requestPermission === 'function'
     ) {
-      document.addEventListener('click', () => this.onOrientationEvent());
+      document.addEventListener('click', this.onOrientationEvent);
     } else {
       window.addEventListener('devicemotion', this.onOrientation);
     }
@@ -74,7 +99,6 @@ class FackImage {
   onOrientationEvent() {
     DeviceOrientationEvent.requestPermission()
       .then(permissionState => {
-        console.log(permissionState);
         if (permissionState === 'granted') {
           window.addEventListener('devicemotion', this.onOrientation);
         } else {
@@ -131,9 +155,9 @@ class FackImage {
     this.renderer.setSize(this.width, this.height);
   }
 
-  updataImage() {
+  loadImage() {
     const image = new Image();
-    image.src = './image/lady.jpg';
+    image.src = this.texture[this.textureName].image1;
     image.onload = () => {
       this.imageAspect = image.naturalHeight / image.naturalWidth;
       this.uAspect = image.naturalWidth / image.naturalHeight;
@@ -153,14 +177,22 @@ class FackImage {
 
       this.resolution = new THREE.Vector2(a1, a2);
 
-      this.setGl();
+      if (this.isFirst) {
+        this.setGl();
+      } else {
+        this.updateTexture();
+      }
     };
   }
 
   setGl() {
     // 画像を読み込む
-    const image1 = new THREE.TextureLoader().load('./image/lady.jpg');
-    const image2 = new THREE.TextureLoader().load('./image/lady-map.jpg');
+    const image1 = new THREE.TextureLoader().load(
+      this.texture[this.textureName].image1
+    );
+    const image2 = new THREE.TextureLoader().load(
+      this.texture[this.textureName].image2
+    );
 
     const geometry = new THREE.PlaneGeometry(1, 1);
     this.material = new THREE.ShaderMaterial({
@@ -199,10 +231,28 @@ class FackImage {
       fragmentShader
     });
 
+    this.isFirst = false;
+    this.textureNameCache = this.textureName;
+
     const plane = new THREE.Mesh(geometry, this.material);
     this.scene.add(plane);
 
     this.render();
+  }
+
+  updateTexture() {
+    // 画像を読み込む
+    const image1 = new THREE.TextureLoader().load(
+      this.texture[this.textureName].image1
+    );
+    const image2 = new THREE.TextureLoader().load(
+      this.texture[this.textureName].image2
+    );
+
+    this.material.uniforms.uTex1.value = image1;
+    this.material.uniforms.uTex2.value = image2;
+
+    this.onResize();
   }
 
   render() {
@@ -211,6 +261,11 @@ class FackImage {
     this.threshold = new THREE.Vector2(this.thresholdX, this.thresholdY);
     this.material.uniforms.uThreshold.value = this.threshold;
     this.renderer.render(this.scene, this.camera);
+
+    if (this.textureName !== this.textureNameCache) {
+      this.textureNameCache = this.textureName;
+      this.loadImage();
+    }
   }
 
   // マウスのイベント
@@ -230,12 +285,29 @@ fackImage.init();
 
 const pane = new Tweakpane();
 
-pane.addInput(fackImage, 'thresholdX', {
+const params = pane.addFolder({
+  title: 'params'
+});
+
+const textures = pane.addFolder({
+  title: 'textures'
+});
+
+params.addInput(fackImage, 'thresholdX', {
   min: 0,
   max: 100
 });
 
-pane.addInput(fackImage, 'thresholdY', {
+params.addInput(fackImage, 'thresholdY', {
   min: 0,
   max: 100
+});
+
+textures.addInput(fackImage, 'textureName', {
+  options: {
+    ball: 'ball',
+    canyon: 'canyon',
+    lady: 'lady',
+    mount: 'mount'
+  }
 });
