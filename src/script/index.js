@@ -1,10 +1,11 @@
 import * as THREE from 'three';
+import Tweakpane from 'tweakpane';
 
 import vertexShader from './gl/vertexShader.vert';
 import fragmentShader from './gl/fragmentShader.frag';
 
 class FackImage {
-  constructor () {
+  constructor() {
     this.$$canvas = document.getElementById('js-canvas');
     this.scene = new THREE.Scene();
     this.renderer = new THREE.WebGLRenderer({
@@ -25,7 +26,11 @@ class FackImage {
     this.resolution = null;
 
     this.mouse = new THREE.Vector2(0.0, 0.0);
-    this.threshold = new THREE.Vector2(35, 15);
+
+    this.thresholdX = 35;
+    this.thresholdY = 15;
+
+    this.threshold = new THREE.Vector2(this.thresholdX, this.thresholdY);
 
     // bind系
     this.onMouse = this.onMouse.bind(this);
@@ -34,7 +39,7 @@ class FackImage {
     this.onOrientation = this.onOrientation.bind(this);
   }
 
-  init () {
+  init() {
     this.renderer.setPixelRatio(this.ratio);
     this.renderer.setClearColor(0xffffff, 1);
     this.renderer.setSize(this.width, this.height);
@@ -48,6 +53,85 @@ class FackImage {
     );
     this.camera.position.set(0, 0, 10);
 
+    this.updataImage();
+    this.onListener();
+  }
+
+  onListener() {
+    document.addEventListener('mousemove', this.onMouse);
+    window.addEventListener('resize', this.onResize);
+
+    if (
+      DeviceOrientationEvent &&
+      typeof DeviceOrientationEvent.requestPermission === 'function'
+    ) {
+      document.addEventListener('click', () => this.onOrientationEvent());
+    } else {
+      window.addEventListener('devicemotion', this.onOrientation);
+    }
+  }
+
+  onOrientationEvent() {
+    DeviceOrientationEvent.requestPermission()
+      .then(permissionState => {
+        console.log(permissionState);
+        if (permissionState === 'granted') {
+          window.addEventListener('devicemotion', this.onOrientation);
+        } else {
+          alert('モーションの利用を許可してください');
+        }
+      })
+      .catch(() => {
+        alert('モーションの利用を許可してください');
+      });
+  }
+
+  onOrientation(e) {
+    const { x, y } = e.accelerationIncludingGravity;
+    const maxTilt = 3;
+
+    this.mouse = new THREE.Vector2(
+      this.clamp(x, -maxTilt, maxTilt) / maxTilt,
+      this.clamp(y, -maxTilt, maxTilt) / maxTilt
+    );
+  }
+
+  clamp(number, lower, upper) {
+    if (number === number) {
+      if (upper !== undefined) {
+        number = number <= upper ? number : upper;
+      }
+      if (lower !== undefined) {
+        number = number >= lower ? number : lower;
+      }
+    }
+    return number;
+  }
+
+  onResize() {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+
+    let a1;
+    let a2;
+
+    if (this.height / this.width < this.imageAspect) {
+      // 横幅に合わせた比率
+      a1 = 1;
+      a2 = this.height / this.width / this.imageAspect;
+    } else {
+      // 縦幅に合わせた比率
+      a1 = (this.width / this.height) * this.imageAspect;
+      a2 = 1;
+    }
+
+    this.resolution = new THREE.Vector2(a1, a2);
+    this.material.uniforms.uResolution.value = this.resolution;
+
+    this.renderer.setSize(this.width, this.height);
+  }
+
+  updataImage() {
     const image = new Image();
     image.src = './image/lady.jpg';
     image.onload = () => {
@@ -71,85 +155,9 @@ class FackImage {
 
       this.setGl();
     };
-
-    this.onListener();
   }
 
-  onListener () {
-    document.addEventListener('mousemove', this.onMouse);
-    window.addEventListener('resize', this.onResize);
-
-    if (
-      DeviceOrientationEvent &&
-      typeof DeviceOrientationEvent.requestPermission === 'function'
-    ) {
-      document.addEventListener('click', () => this.onOrientationEvent());
-    } else {
-      window.addEventListener('devicemotion', this.onOrientation);
-    }
-  }
-
-  onOrientationEvent () {
-    DeviceOrientationEvent.requestPermission()
-      .then(permissionState => {
-        console.log(permissionState);
-        if (permissionState === 'granted') {
-          window.addEventListener('devicemotion', this.onOrientation);
-        } else {
-          alert('モーションの利用を許可してください');
-        }
-      })
-      .catch(() => {
-        alert('モーションの利用を許可してください');
-      });
-  }
-
-  onOrientation (e) {
-    const { x, y } = e.accelerationIncludingGravity;
-    const maxTilt = 3;
-
-    this.mouse = new THREE.Vector2(
-      this.clamp(x, -maxTilt, maxTilt) / maxTilt,
-      this.clamp(y, -maxTilt, maxTilt) / maxTilt
-    );
-  }
-
-  clamp (number, lower, upper) {
-    if (number === number) {
-      if (upper !== undefined) {
-        number = number <= upper ? number : upper;
-      }
-      if (lower !== undefined) {
-        number = number >= lower ? number : lower;
-      }
-    }
-    return number;
-  }
-
-  onResize () {
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
-
-    let a1;
-    let a2;
-
-    if (this.height / this.width < this.imageAspect) {
-      // 横幅に合わせた比率
-      a1 = 1;
-      a2 = this.height / this.width / this.imageAspect;
-    } else {
-      // 縦幅に合わせた比率
-      a1 = (this.width / this.height) * this.imageAspect;
-      a2 = 1;
-    }
-
-    this.resolution = new THREE.Vector2(a1, a2);
-    this.material.uniforms.uResolution.value = this.resolution;
-
-    this.renderer.setSize(this.width, this.height);
-  }
-
-  setGl () {
+  setGl() {
     // 画像を読み込む
     const image1 = new THREE.TextureLoader().load('./image/lady.jpg');
     const image2 = new THREE.TextureLoader().load('./image/lady-map.jpg');
@@ -197,14 +205,16 @@ class FackImage {
     this.render();
   }
 
-  render () {
+  render() {
     requestAnimationFrame(this.render);
     this.material.uniforms.uMouse.value = this.mouse;
+    this.threshold = new THREE.Vector2(this.thresholdX, this.thresholdY);
+    this.material.uniforms.uThreshold.value = this.threshold;
     this.renderer.render(this.scene, this.camera);
   }
 
   // マウスのイベント
-  onMouse (e) {
+  onMouse(e) {
     let halfX = this.width / 2;
     let halfY = this.height / 2;
 
@@ -217,3 +227,15 @@ class FackImage {
 
 const fackImage = new FackImage();
 fackImage.init();
+
+const pane = new Tweakpane();
+
+pane.addInput(fackImage, 'thresholdX', {
+  min: 0,
+  max: 100
+});
+
+pane.addInput(fackImage, 'thresholdY', {
+  min: 0,
+  max: 100
+});
