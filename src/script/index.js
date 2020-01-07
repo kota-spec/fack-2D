@@ -194,6 +194,9 @@ class FackImage {
       this.texture[this.textureName].image2
     );
 
+    image1.minFilter = THREE.LinearFilter;
+    image2.minFilter = THREE.LinearFilter;
+
     const geometry = new THREE.PlaneGeometry(1, 1);
     this.material = new THREE.ShaderMaterial({
       uniforms: {
@@ -248,6 +251,9 @@ class FackImage {
     const image2 = new THREE.TextureLoader().load(
       this.texture[this.textureName].image2
     );
+
+    image1.minFilter = THREE.LinearFilter;
+    image2.minFilter = THREE.LinearFilter;
 
     this.material.uniforms.uTex1.value = image1;
     this.material.uniforms.uTex2.value = image2;
