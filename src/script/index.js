@@ -54,7 +54,7 @@ class FackImage {
         image1: './image/mount.jpg',
         image2: './image/mount-map.jpg'
       },
-      tsgumi: {
+      tsugumi: {
         image1: './image/R_D1-1.jpg',
         image2: './image/R&D1-13.jpg'
       }
@@ -319,6 +319,6 @@ textures.addInput(fackImage, 'textureName', {
     canyon: 'canyon',
     lady: 'lady',
     mount: 'mount',
-    tsgumi: 'tsgumi'
+    tsugumi: 'tsugumi'
   }
 });
