@@ -4,6 +4,8 @@ import Tweakpane from 'tweakpane';
 import vertexShader from './gl/vertexShader.vert';
 import fragmentShader from './gl/fragmentShader.frag';
 
+const length = 20;
+
 class FackImage {
   constructor() {
     this.$$canvas = document.getElementById('js-canvas');
@@ -40,6 +42,14 @@ class FackImage {
     this.textureName = 'lady';
     this.textureNameCache = '';
 
+    const box = [];
+
+    for (let i = 2; i < length + 1; i++) {
+      box.push(i === 20 ? `./image/R&D1-${i}.png` : `./image/R&D1-${i}.jpg`);
+    }
+
+    console.log(box);
+
     this.texture = {
       lady: {
         image1: './image/lady.jpg',
@@ -59,22 +69,7 @@ class FackImage {
       },
       tsugumi: {
         image1: './image/R&D1-1.jpg',
-        image2: [
-          './image/R&D1-2.jpg',
-          './image/R&D1-3.jpg',
-          './image/R&D1-4.jpg',
-          './image/R&D1-5.jpg',
-          './image/R&D1-6.jpg',
-          './image/R&D1-7.jpg',
-          './image/R&D1-8.jpg',
-          './image/R&D1-9.jpg',
-          './image/R&D1-10.jpg',
-          './image/R&D1-11.jpg',
-          './image/R&D1-11.jpg',
-          './image/R&D1-12.jpg',
-          './image/R&D1-12.jpg',
-          './image/R&D1-13.jpg'
-        ]
+        image2: box
       }
     };
 
@@ -354,5 +349,5 @@ textures.addInput(fackImage, 'textureName', {
 textures.addInput(fackImage, 'current', {
   step: 1,
   min: 1,
-  max: 12
+  max: length
 });
