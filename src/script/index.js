@@ -30,6 +30,9 @@ class FackImage {
     this.thresholdX = 35;
     this.thresholdY = 15;
 
+    this.current = 8; // 現在の背景ぼかし
+    this.currentCache = 8; // 現在の背景ぼかし
+
     this.isFirst = true;
 
     this.threshold = new THREE.Vector2(this.thresholdX, this.thresholdY);
@@ -40,23 +43,38 @@ class FackImage {
     this.texture = {
       lady: {
         image1: './image/lady.jpg',
-        image2: './image/lady-map.jpg'
+        image2: ['./image/lady-map.jpg']
       },
       ball: {
         image1: './image/ball.jpg',
-        image2: './image/ball-map.jpg'
+        image2: ['./image/ball-map.jpg']
       },
       canyon: {
         image1: './image/canyon.jpg',
-        image2: './image/canyon-map.jpg'
+        image2: ['./image/canyon-map.jpg']
       },
       mount: {
         image1: './image/mount.jpg',
-        image2: './image/mount-map.jpg'
+        image2: ['./image/mount-map.jpg']
       },
       tsugumi: {
-        image1: './image/R_D1-1.jpg',
-        image2: './image/R&D1-13.jpg'
+        image1: './image/R&D1-1.jpg',
+        image2: [
+          './image/R&D1-2.jpg',
+          './image/R&D1-3.jpg',
+          './image/R&D1-4.jpg',
+          './image/R&D1-5.jpg',
+          './image/R&D1-6.jpg',
+          './image/R&D1-7.jpg',
+          './image/R&D1-8.jpg',
+          './image/R&D1-9.jpg',
+          './image/R&D1-10.jpg',
+          './image/R&D1-11.jpg',
+          './image/R&D1-11.jpg',
+          './image/R&D1-12.jpg',
+          './image/R&D1-12.jpg',
+          './image/R&D1-13.jpg'
+        ]
       }
     };
 
@@ -195,7 +213,9 @@ class FackImage {
       this.texture[this.textureName].image1
     );
     const image2 = new THREE.TextureLoader().load(
-      this.texture[this.textureName].image2
+      this.texture[this.textureName].image2[this.current - 1]
+        ? this.texture[this.textureName].image2[this.current - 1]
+        : this.texture[this.textureName].image2[0]
     );
 
     image1.minFilter = THREE.LinearFilter;
@@ -253,7 +273,9 @@ class FackImage {
       this.texture[this.textureName].image1
     );
     const image2 = new THREE.TextureLoader().load(
-      this.texture[this.textureName].image2
+      this.texture[this.textureName].image2[this.current - 1]
+        ? this.texture[this.textureName].image2[this.current - 1]
+        : this.texture[this.textureName].image2[0]
     );
 
     image1.minFilter = THREE.LinearFilter;
@@ -272,8 +294,14 @@ class FackImage {
     this.material.uniforms.uThreshold.value = this.threshold;
     this.renderer.render(this.scene, this.camera);
 
-    if (this.textureName !== this.textureNameCache) {
+    console.log(this.current);
+
+    if (
+      this.textureName !== this.textureNameCache ||
+      this.current !== this.currentCache
+    ) {
       this.textureNameCache = this.textureName;
+      this.currentCache = this.current;
       this.loadImage();
     }
   }
@@ -321,4 +349,10 @@ textures.addInput(fackImage, 'textureName', {
     mount: 'mount',
     tsugumi: 'tsugumi'
   }
+});
+
+textures.addInput(fackImage, 'current', {
+  step: 1,
+  min: 1,
+  max: 12
 });
