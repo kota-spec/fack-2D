@@ -73,7 +73,11 @@ class FackImage {
       },
       tsugumi2: {
         image1: './image/R&D2-1.png',
-        image2: ['./image/R&D2-2.png', './image/R&D2-3.png']
+        image2: [
+          './image/R&D2-4.png',
+          './image/R&D2-2.png',
+          './image/R&D2-3.png'
+        ]
       },
       tsugumi3: {
         image1: './image/R&D3-1.png',
