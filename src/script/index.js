@@ -4,7 +4,7 @@ import Tweakpane from 'tweakpane';
 import vertexShader from './gl/vertexShader.vert';
 import fragmentShader from './gl/fragmentShader.frag';
 
-const length = 20;
+const length = 21;
 
 class FackImage {
   constructor() {
@@ -363,5 +363,5 @@ textures.addInput(fackImage, 'textureName', {
 textures.addInput(fackImage, 'current', {
   step: 1,
   min: 1,
-  max: length
+  max: length - 1
 });
